@@ -1,0 +1,49 @@
+# frozen_string_literal: true
+
+RSpec.describe Nomos::Rules do
+  def build_context(changed_files:, changed_lines:)
+    Nomos::Context.new(
+      pull_request: { "number" => 1 },
+      changed_files: changed_files,
+      patches: {},
+      repo: "owner/repo",
+      base_branch: "main",
+      ci: {},
+      changed_lines: changed_lines
+    )
+  end
+
+  it "builds builtin rules" do
+    rule = described_class.build(name: "sample", type: "builtin.no_large_pr", params: { max_changed_lines: 5 })
+    expect(rule).to be_a(Nomos::Rules::Builtin::NoLargePr)
+  end
+
+  it "raises on unknown rule type" do
+    expect {
+      described_class.build(name: "sample", type: "unknown", params: {})
+    }.to raise_error(Nomos::Error, /Unknown rule type/)
+  end
+
+  it "flags large PRs" do
+    context = build_context(changed_files: ["README.md"], changed_lines: 12)
+    rule = Nomos::Rules::Builtin::NoLargePr.new(name: "large", params: { max_changed_lines: 10 })
+
+    findings = rule.run(context)
+
+    expect(findings.length).to eq(1)
+    expect(findings.first.severity).to eq(:fail)
+  end
+
+  it "requires files to change" do
+    context = build_context(changed_files: ["lib/nomos.rb"], changed_lines: 1)
+    rule = Nomos::Rules::Builtin::RequireFileChange.new(
+      name: "changelog",
+      params: { patterns: ["CHANGELOG.md"] }
+    )
+
+    findings = rule.run(context)
+
+    expect(findings.length).to eq(1)
+    expect(findings.first.text).to include("Required files not changed")
+  end
+end
