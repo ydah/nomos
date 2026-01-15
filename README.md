@@ -44,14 +44,33 @@ rules:
     params:
       patterns:
         - CHANGELOG.md
+
+  - name: custom_rules
+    type: ruby.file
+    params:
+      path: .nomos/rules.rb
 ```
 
 ### CLI
 
 ```
-nomos run [--config PATH] [--strict] [--debug] [--reporter github,console]
+nomos run [--config PATH] [--strict] [--debug] [--reporter github,console,json]
 nomos init
 nomos doctor
+```
+
+### Ruby DSL
+
+Define rules in `.nomos/rules.rb`:
+
+```rb
+rule "no_debugger" do
+  changed_files.grep(/\\.rb$/).each do |file|
+    if diff(file).include?("binding.pry")
+      fail "binding.pry detected", file: file
+    end
+  end
+end
 ```
 
 ## Development

@@ -8,9 +8,11 @@ require_relative "nomos/context_loader"
 require_relative "nomos/finding"
 require_relative "nomos/github_client"
 require_relative "nomos/rules"
+require_relative "nomos/rules/ruby_file"
 require_relative "nomos/runner"
 require_relative "nomos/reporters/console"
 require_relative "nomos/reporters/github"
+require_relative "nomos/reporters/json"
 
 module Nomos
   class Error < StandardError; end

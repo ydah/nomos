@@ -3,12 +3,14 @@
 require_relative "rules/base"
 require_relative "rules/builtin/no_large_pr"
 require_relative "rules/builtin/require_file_change"
+require_relative "rules/ruby_file"
 
 module Nomos
   module Rules
     BUILTIN_MAP = {
       "builtin.no_large_pr" => Builtin::NoLargePr,
-      "builtin.require_file_change" => Builtin::RequireFileChange
+      "builtin.require_file_change" => Builtin::RequireFileChange,
+      "ruby.file" => RubyFile
     }.freeze
 
     def self.build(rule_config)

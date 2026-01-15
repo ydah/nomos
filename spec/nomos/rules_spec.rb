@@ -18,6 +18,11 @@ RSpec.describe Nomos::Rules do
     expect(rule).to be_a(Nomos::Rules::Builtin::NoLargePr)
   end
 
+  it "builds ruby file rules" do
+    rule = described_class.build(name: "custom", type: "ruby.file", params: { path: ".nomos/rules.rb" })
+    expect(rule).to be_a(Nomos::Rules::RubyFile)
+  end
+
   it "raises on unknown rule type" do
     expect {
       described_class.build(name: "sample", type: "unknown", params: {})

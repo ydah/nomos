@@ -40,7 +40,7 @@ module Nomos
         opts.on("--config PATH", "Config path (default: nomos.yml)") { |path| options[:config] = path }
         opts.on("--strict", "Treat warns as failures") { options[:strict] = true }
         opts.on("--debug", "Show debug details") { options[:debug] = true }
-        opts.on("--reporter LIST", "Comma-separated reporters (github,console)") do |list|
+        opts.on("--reporter LIST", "Comma-separated reporters (github,console,json)") do |list|
           options[:reporter] = list.split(",").map(&:strip)
         end
       end
@@ -128,6 +128,8 @@ module Nomos
         when "github"
           client = GitHubClient.new(token: ENV["GITHUB_TOKEN"], api_url: ENV["GITHUB_API_URL"] || "https://api.github.com")
           Reporters::GitHub.new(client: client, repo: context.repo, pr_number: context.pull_request.fetch("number"))
+        when "json"
+          Reporters::Json.new(path: json_report_path(config))
         else
           raise Nomos::Error, "Unknown reporter: #{name}"
         end
@@ -148,6 +150,8 @@ module Nomos
         reporter:
           github: true
           console: true
+          json:
+            path: nomos-report.json
 
         rules:
           - name: no_large_pr
@@ -169,6 +173,20 @@ module Nomos
 
         # Custom rules will be supported in Phase 2.
       RUBY
+    end
+
+    def json_report_path(config)
+      json = config.reporters[:json]
+      case json
+      when Hash
+        json[:path] || "nomos-report.json"
+      when String
+        json
+      when true
+        "nomos-report.json"
+      else
+        "nomos-report.json"
+      end
     end
   end
 end
