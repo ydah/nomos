@@ -6,7 +6,7 @@ RSpec.describe Nomos::CLI do
   end
 
   it "returns 0 when only warn and not strict" do
-    config = instance_double(Nomos::Config, reporters: { console: true }, rules: [])
+    config = instance_double(Nomos::Config, reporters: { console: true }, rules: [], performance: {})
     context = instance_double(Nomos::Context)
     runner = instance_double(Nomos::Runner, run: [build_finding(:warn)])
 
@@ -21,7 +21,7 @@ RSpec.describe Nomos::CLI do
   end
 
   it "returns 1 when warn and strict" do
-    config = instance_double(Nomos::Config, reporters: { console: true }, rules: [])
+    config = instance_double(Nomos::Config, reporters: { console: true }, rules: [], performance: {})
     context = instance_double(Nomos::Context)
     runner = instance_double(Nomos::Runner, run: [build_finding(:warn)])
 
@@ -36,7 +36,7 @@ RSpec.describe Nomos::CLI do
   end
 
   it "returns 1 when fail is present" do
-    config = instance_double(Nomos::Config, reporters: { console: true }, rules: [])
+    config = instance_double(Nomos::Config, reporters: { console: true }, rules: [], performance: {})
     context = instance_double(Nomos::Context)
     runner = instance_double(Nomos::Runner, run: [build_finding(:fail)])
 
@@ -54,5 +54,27 @@ RSpec.describe Nomos::CLI do
     code = described_class.run(["unknown"])
 
     expect(code).to eq(1)
+  end
+
+  it "disables cache and lazy diff when --no-cache is set" do
+    config = instance_double(
+      Nomos::Config,
+      reporters: { console: true },
+      rules: [],
+      performance: { cache: true, lazy_diff: true, timing: true }
+    )
+    context = instance_double(Nomos::Context)
+    runner = instance_double(Nomos::Runner, run: [])
+
+    allow(Nomos::Config).to receive(:load).and_return(config)
+    expect(Nomos::ContextLoader).to receive(:load).with(
+      performance: { cache: false, lazy_diff: false, timing: true }
+    ).and_return(context)
+    allow(Nomos::Runner).to receive(:new).and_return(runner)
+    allow_any_instance_of(described_class).to receive(:build_reporters).and_return([instance_double(Nomos::Reporters::Console, report: nil)])
+
+    code = described_class.run(["run", "--no-cache"])
+
+    expect(code).to eq(0)
   end
 end

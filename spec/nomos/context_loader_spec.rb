@@ -41,4 +41,42 @@ RSpec.describe Nomos::ContextLoader do
   ensure
     file.unlink
   end
+
+  it "uses cache to avoid repeated API calls" do
+    event = {
+      "pull_request" => { "number" => 12 }
+    }
+
+    event_file = Tempfile.new("event.json")
+    event_file.write(JSON.generate(event))
+    event_file.close
+
+    cache_file = Tempfile.new("cache.json")
+    cache_file.close
+
+    client = instance_double(Nomos::GitHubClient)
+    expect(client).to receive(:pull_request).once.and_return({
+      "number" => 12,
+      "base" => { "ref" => "main" }
+    })
+    expect(client).to receive(:pull_request_files).once.and_return([
+      { "filename" => "README.md", "patch" => "+hello", "additions" => 1, "deletions" => 0 }
+    ])
+    allow(Nomos::GitHubClient).to receive(:new).and_return(client)
+
+    env = {
+      "GITHUB_EVENT_PATH" => event_file.path,
+      "GITHUB_REPOSITORY" => "owner/repo",
+      "GITHUB_TOKEN" => "token"
+    }
+    performance = { cache: true, cache_path: cache_file.path }
+
+    described_class.load(env: env, performance: performance)
+    context = described_class.load(env: env, performance: performance)
+
+    expect(context.changed_files).to eq(["README.md"])
+  ensure
+    event_file.unlink
+    cache_file.unlink
+  end
 end

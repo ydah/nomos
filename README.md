@@ -69,7 +69,7 @@ Performance notes:
 ### CLI
 
 ```
-nomos run [--config PATH] [--strict] [--debug] [--reporter github,console,json]
+nomos run [--config PATH] [--strict] [--debug] [--no-cache] [--reporter github,console,json]
 nomos init
 nomos doctor
 ```

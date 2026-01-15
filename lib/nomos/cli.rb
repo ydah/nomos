@@ -33,7 +33,8 @@ module Nomos
         config: Config::DEFAULT_PATH,
         strict: false,
         debug: false,
-        reporter: nil
+        reporter: nil,
+        no_cache: false
       }
 
       parser = OptionParser.new do |opts|
@@ -41,6 +42,7 @@ module Nomos
         opts.on("--config PATH", "Config path (default: nomos.yml)") { |path| options[:config] = path }
         opts.on("--strict", "Treat warns as failures") { options[:strict] = true }
         opts.on("--debug", "Show debug details") { options[:debug] = true }
+        opts.on("--no-cache", "Disable cache and lazy diff for this run") { options[:no_cache] = true }
         opts.on("--reporter LIST", "Comma-separated reporters (github,console,json)") do |list|
           options[:reporter] = list.split(",").map(&:strip)
         end
@@ -50,7 +52,11 @@ module Nomos
 
       timing = Timing.new
       config = timing.measure("config") { Config.load(options[:config]) }
-      context = timing.measure("context") { ContextLoader.load(performance: config.performance) }
+      performance = config.performance
+      if options[:no_cache]
+        performance = performance.merge(cache: false, lazy_diff: false)
+      end
+      context = timing.measure("context") { ContextLoader.load(performance: performance) }
       findings = timing.measure("rules") { Runner.new(config, context).run }
 
       reporters = timing.measure("reporters") { build_reporters(config, context, options[:reporter]) }
