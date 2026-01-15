@@ -20,6 +20,38 @@ module Nomos
           @context.patches[file].to_s
         end
 
+        def pr_title
+          @context.pull_request["title"]
+        end
+
+        def pr_body
+          @context.pull_request["body"]
+        end
+
+        def pr_number
+          @context.pull_request["number"]
+        end
+
+        def pr_author
+          @context.pull_request.dig("user", "login")
+        end
+
+        def pr_labels
+          Array(@context.pull_request["labels"]).map { |label| label["name"] }.compact
+        end
+
+        def repo
+          @context.repo
+        end
+
+        def base_branch
+          @context.base_branch
+        end
+
+        def ci
+          @context.ci
+        end
+
         def message(text, **opts)
           @findings << Finding.message(text, **opts, source: @rule_name)
         end

@@ -78,6 +78,12 @@ rule "no_debugger" do
 end
 ```
 
+Available DSL helpers:
+
+- `changed_files`, `diff(file)`
+- `pr_title`, `pr_body`, `pr_number`, `pr_author`, `pr_labels`
+- `repo`, `base_branch`, `ci`
+
 ## Development
 
 Run tests:
