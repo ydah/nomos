@@ -3,6 +3,9 @@
 require_relative "rules/base"
 require_relative "rules/builtin/no_large_pr"
 require_relative "rules/builtin/require_file_change"
+require_relative "rules/builtin/forbid_paths"
+require_relative "rules/builtin/require_labels"
+require_relative "rules/builtin/todo_guard"
 require_relative "rules/ruby_file"
 
 module Nomos
@@ -10,6 +13,9 @@ module Nomos
     BUILTIN_MAP = {
       "builtin.no_large_pr" => Builtin::NoLargePr,
       "builtin.require_file_change" => Builtin::RequireFileChange,
+      "builtin.forbid_paths" => Builtin::ForbidPaths,
+      "builtin.require_labels" => Builtin::RequireLabels,
+      "builtin.todo_guard" => Builtin::TodoGuard,
       "ruby.file" => RubyFile
     }.freeze
 
