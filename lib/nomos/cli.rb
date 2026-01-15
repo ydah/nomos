@@ -8,6 +8,7 @@ require_relative "github_client"
 require_relative "runner"
 require_relative "reporters/console"
 require_relative "reporters/github"
+require_relative "timing"
 
 module Nomos
   class CLI
@@ -47,12 +48,15 @@ module Nomos
 
       parser.parse!(argv)
 
-      config = Config.load(options[:config])
-      context = ContextLoader.load
-      findings = Runner.new(config, context).run
+      timing = Timing.new
+      config = timing.measure("config") { Config.load(options[:config]) }
+      context = timing.measure("context") { ContextLoader.load(performance: config.performance) }
+      findings = timing.measure("rules") { Runner.new(config, context).run }
 
-      reporters = build_reporters(config, context, options[:reporter])
-      reporters.each { |reporter| reporter.report(findings) }
+      reporters = timing.measure("reporters") { build_reporters(config, context, options[:reporter]) }
+      timing.measure("report_outputs") { reporters.each { |reporter| reporter.report(findings) } }
+
+      timing.report if config.performance.fetch(:timing, false)
 
       exit_code(findings, options[:strict])
     rescue Nomos::Error => e
@@ -152,6 +156,12 @@ module Nomos
           console: true
           json:
             path: nomos-report.json
+
+        performance:
+          concurrency: 4
+          cache: true
+          lazy_diff: true
+          timing: false
 
         rules:
           - name: no_large_pr

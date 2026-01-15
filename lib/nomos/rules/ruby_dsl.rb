@@ -17,7 +17,7 @@ module Nomos
         end
 
         def diff(file)
-          @context.patches[file].to_s
+          @context.diff(file).to_s
         end
 
         def pr_title

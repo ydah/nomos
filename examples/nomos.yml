@@ -8,6 +8,9 @@ reporter:
 
 performance:
   concurrency: 4
+  cache: true
+  lazy_diff: true
+  timing: false
 
 rules:
   - name: no_large_pr

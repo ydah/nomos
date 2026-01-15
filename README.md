@@ -33,6 +33,12 @@ reporter:
   github: true
   console: true
 
+performance:
+  concurrency: 4
+  cache: true
+  lazy_diff: true
+  timing: false
+
 rules:
   - name: no_large_pr
     type: builtin.no_large_pr
@@ -55,6 +61,10 @@ Examples:
 
 - `examples/nomos.yml`
 - `examples/.nomos/rules.rb`
+
+Performance notes:
+
+- Cache file defaults to `.nomos/cache.json` (override with `performance.cache_path`)
 
 ### CLI
 
