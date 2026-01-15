@@ -51,6 +51,11 @@ rules:
       path: .nomos/rules.rb
 ```
 
+Examples:
+
+- `examples/nomos.yml`
+- `examples/.nomos/rules.rb`
+
 ### CLI
 
 ```
