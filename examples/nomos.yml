@@ -1,0 +1,27 @@
+version: 1
+
+reporter:
+  github: true
+  console: true
+  json:
+    path: nomos-report.json
+
+performance:
+  concurrency: 4
+
+rules:
+  - name: no_large_pr
+    type: builtin.no_large_pr
+    params:
+      max_changed_lines: 800
+
+  - name: require_changelog
+    type: builtin.require_file_change
+    params:
+      patterns:
+        - CHANGELOG.md
+
+  - name: custom_rules
+    type: ruby.file
+    params:
+      path: .nomos/rules.rb
