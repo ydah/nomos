@@ -8,3 +8,8 @@
 /tmp/
 .rspec_status
 Gemfile.lock
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
