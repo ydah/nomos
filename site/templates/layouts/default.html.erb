@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="<%= site["language"] || "en" %>">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= page["title"] %> | <%= site["title"] %></title>
+    <meta name="description" content="<%= page["description"] || site["description"] %>" />
+    <meta property="og:title" content="<%= page["title"] %>" />
+    <meta property="og:description" content="<%= page["description"] || site["description"] %>" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<%= site["url"] %>" />
+    <link rel="icon" href="<%= asset_path('logo-header.svg') %>" />
+    <link rel="stylesheet" href="<%= asset_path('styles.css') %>" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <div class="glow"></div>
+    <%= page["content"] %>
+  </body>
+</html>

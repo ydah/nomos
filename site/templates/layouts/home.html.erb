@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="<%= site["language"] || "en" %>">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= page["title"] %> | <%= site["title"] %></title>
+    <meta name="description" content="<%= page["description"] || site["description"] %>" />
+    <meta property="og:title" content="<%= page["title"] %>" />
+    <meta property="og:description" content="<%= page["description"] || site["description"] %>" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<%= site["url"] %>" />
+    <link rel="icon" href="<%= asset_path('logo-header.svg') %>" />
+    <link rel="stylesheet" href="<%= asset_path('styles.css') %>" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <div class="glow"></div>
+
+    <main>
+      <header class="hero">
+        <nav class="nav">
+          <div class="brand">
+            <img src="<%= asset_path('logo.png') %>" alt="Nomos logo" />
+          </div>
+          <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#workflow">Workflow</a>
+            <a href="#config">Config</a>
+            <a href="#integrations">Integrations</a>
+          </div>
+          <a class="button ghost" href="<%= page["cta_url"] %>"><%= page["cta_label"] %></a>
+        </nav>
+
+        <section class="hero-content">
+          <div>
+            <p class="eyebrow">PR Policy Engine</p>
+            <h1>Bring harmony to your pull requests.</h1>
+            <p class="lead"><%= page["description"] %></p>
+            <div class="hero-actions">
+              <a class="button primary" href="<%= page["cta_url"] %>"><%= page["cta_label"] %></a>
+              <a class="button ghost" href="#config">See config</a>
+            </div>
+            <div class="hero-meta">
+              <span>Ruby 3.2+</span>
+              <span>GitHub Actions ready</span>
+              <span>Fast startup</span>
+            </div>
+          </div>
+          <div class="hero-card">
+            <div class="code-header">
+              <span></span><span></span><span></span>
+              <strong>nomos.yml</strong>
+            </div>
+            <pre><code>reporter:
+  github: true
+  console: true
+
+rules:
+  - name: no_large_pr
+    type: builtin.no_large_pr
+    params:
+      max_changed_lines: 800</code></pre>
+          </div>
+        </section>
+      </header>
+
+      <section id="features" class="section">
+        <div class="section-title">
+          <h2>Designed for the pull request moment.</h2>
+          <p>Nomos evaluates PR metadata and diffs, then reports findings as message, warn, or fail.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3>Diff-first execution</h3>
+            <p>Start with the PR diff and lazy-fetch extra data only when a rule needs it.</p>
+          </article>
+          <article class="card">
+            <h3>Parallel rule engine</h3>
+            <p>Run built-in and custom Ruby rules concurrently for fast feedback in CI.</p>
+          </article>
+          <article class="card">
+            <h3>Clear reporting</h3>
+            <p>Ship results to GitHub comments, console output, or JSON for downstream tooling.</p>
+          </article>
+          <article class="card">
+            <h3>Strict mode</h3>
+            <p>Fail the pipeline when policy is violated and keep your standards enforced.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="workflow" class="section split">
+        <div>
+          <h2>Fast, intentional workflow.</h2>
+          <p>Nomos is optimized to stay out of the way while still giving you precise, configurable checks.</p>
+          <ul class="list">
+            <li>Minimal GitHub API calls with optional caching</li>
+            <li>Lazy diff fetching to keep startup time low</li>
+            <li>Ruby DSL for custom rule logic</li>
+          </ul>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span>1</span>
+            <div>
+              <h4>Discover</h4>
+              <p>Load event data and compute diffs.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span>2</span>
+            <div>
+              <h4>Evaluate</h4>
+              <p>Run built-in and custom rules concurrently.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span>3</span>
+            <div>
+              <h4>Report</h4>
+              <p>Emit GitHub, console, or JSON output.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="config" class="section">
+        <div class="section-title">
+          <h2>Configuration that reads like policy.</h2>
+          <p>Define your checks in a single YAML file and keep them close to the repo.</p>
+        </div>
+        <div class="config-grid">
+          <div class="card code">
+            <pre><code>version: 1
+
+reporter:
+  github: true
+  console: true
+
+performance:
+  concurrency: 4
+  cache: true
+  lazy_diff: true
+
+rules:
+  - name: require_changelog
+    type: builtin.require_file_change
+    params:
+      patterns:
+        - CHANGELOG.md</code></pre>
+          </div>
+          <div class="card">
+            <h3>Ruby DSL for custom rules</h3>
+            <p>Define richer logic in `.nomos/rules.rb` and ship it alongside your repo.</p>
+            <p class="muted">Run once, cache results, and keep policy close to the code.</p>
+            <a class="text-link" href="<%= page["cta_url"] %>">Explore docs on GitHub →</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="integrations" class="section">
+        <div class="section-title">
+          <h2>Integrations that fit your CI.</h2>
+          <p>Designed for GitHub Actions with clear environment inputs and predictable output.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3>GitHub Actions</h3>
+            <p>Run `nomos run` with a GitHub token and event payload.</p>
+          </article>
+          <article class="card">
+            <h3>Console output</h3>
+            <p>Readable local output for quick iteration.</p>
+          </article>
+          <article class="card">
+            <h3>JSON export</h3>
+            <p>Pipe findings into dashboards or additional automation.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section cta">
+        <div>
+          <h2>Ship guardrails, not gatekeeping.</h2>
+          <p>Keep PR standards consistent while staying fast and predictable.</p>
+        </div>
+        <a class="button primary" href="<%= page["cta_url"] %>"><%= page["cta_label"] %></a>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>Nomos · MIT License</div>
+      <div>
+        <a href="<%= page["cta_url"] %>">GitHub</a>
+      </div>
+    </footer>
+  </body>
+</html>

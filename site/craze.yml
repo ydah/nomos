@@ -1,0 +1,19 @@
+site:
+  title: "Nomos"
+  description: "Bring harmony to your pull requests."
+  url: "https://ydah.github.io/nomos"
+  language: "en"
+
+build:
+  out_dir: "dist"
+  base_path: "/nomos/"
+  clean: true
+
+content:
+  dir: "content"
+
+templates:
+  dir: "templates"
+
+assets:
+  dir: "assets"
