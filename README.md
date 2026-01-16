@@ -5,6 +5,9 @@
 <p align="center">
   <img src="https://img.shields.io/badge/ruby-%3E%3D%203.2-ruby.svg" alt="Ruby Version">
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
+  <a href="https://github.com/ydah/nomos/actions/workflows/main.yml">
+    <img src="https://github.com/ydah/nomos/actions/workflows/main.yml/badge.svg" alt="CI Status">
+  </a>
 </p>
 
 <p align="center">
