@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+require "simplecov"
+
+SimpleCov.start do
+  add_filter "/spec/"
+  track_files "lib/nomos/**/*.rb"
+  add_group "Nomos", "lib/nomos"
+end
+
+SimpleCov.minimum_coverage 80
+
 require "nomos"
 
 RSpec.configure do |config|
