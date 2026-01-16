@@ -187,4 +187,4 @@ bundle exec rspec
 
 ## License
 
-MIT
+MIT License. See `LICENSE` file for details.
