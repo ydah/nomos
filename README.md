@@ -1,4 +1,5 @@
 <p align="center">
+  <img src="docs/logo-header.svg" alt="nomos header logo">
   <strong>Bring harmony to your pull requests.</strong>
 </p>
 <p align="center">
