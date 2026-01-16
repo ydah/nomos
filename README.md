@@ -1,10 +1,56 @@
-# Nomos
+<p align="center">
+  <strong>Bring harmony to your pull requests.</strong>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/ruby-%3E%3D%203.2-ruby.svg" alt="Ruby Version">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
+</p>
 
-Ultra-fast Danger-like CI linter for GitHub pull requests.
+<p align="center">
+  <a href="#features">Features</a> ·
+  <a href="#installation">Installation</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#configuration">Configuration</a> ·
+  <a href="#rules">Rules</a> ·
+  <a href="#reporters">Reporters</a> ·
+  <a href="#how-it-works">How It Works</a>
+</p>
+
+---
 
 Nomos evaluates PR metadata and diffs, then reports findings as `message`, `warn`, or `fail`.
+It is designed for fast startup, minimal API calls, and clear configuration.
 
-## Phase 1 Usage
+## Features
+
+<a name="features"></a>
+
+- Diff-driven by default with optional lazy diff fetching
+- Built-in cache to avoid redundant GitHub API calls
+- Parallel rule execution
+- Built-in rules plus Ruby DSL for custom checks
+- Multiple reporters: GitHub comment, console, JSON
+- Strict mode for CI gating
+
+## Installation
+
+<a name="installation"></a>
+
+Add to your Gemfile:
+
+```ruby
+gem "nomos"
+```
+
+Then install:
+
+```bash
+bundle install
+```
+
+## Quick Start
+
+<a name="quick-start"></a>
 
 Run in CI or locally:
 
@@ -22,7 +68,18 @@ Local override:
 
 - `NOMOS_REPOSITORY` and `NOMOS_PR_NUMBER` if `GITHUB_EVENT_PATH` is not available
 
-### Config
+### GitHub Actions
+
+```yaml
+- name: Nomos
+  run: nomos run
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+## Configuration
+
+<a name="configuration"></a>
 
 Create `nomos.yml`:
 
@@ -57,14 +114,10 @@ rules:
       path: .nomos/rules.rb
 ```
 
-Examples:
-
-- `examples/nomos.yml`
-- `examples/.nomos/rules.rb`
-
 Performance notes:
 
 - Cache file defaults to `.nomos/cache.json` (override with `performance.cache_path`)
+- Use `--no-cache` to disable cache and lazy diff for a single run
 
 ### CLI
 
@@ -74,13 +127,23 @@ nomos init
 nomos doctor
 ```
 
-### Ruby DSL
+## Rules
 
-Define rules in `.nomos/rules.rb`:
+<a name="rules"></a>
+
+### Built-in rules
+
+- `builtin.no_large_pr`
+- `builtin.require_file_change`
+- `builtin.forbid_paths`
+- `builtin.require_labels`
+- `builtin.todo_guard`
+
+### Ruby DSL (`.nomos/rules.rb`)
 
 ```rb
 rule "no_debugger" do
-  changed_files.grep(/\\.rb$/).each do |file|
+  changed_files.grep(/\.rb$/).each do |file|
     if diff(file).include?("binding.pry")
       fail "binding.pry detected", file: file
     end
@@ -94,9 +157,25 @@ Available DSL helpers:
 - `pr_title`, `pr_body`, `pr_number`, `pr_author`, `pr_labels`
 - `repo`, `base_branch`, `ci`
 
-## Development
+## Reporters
 
-Run tests:
+<a name="reporters"></a>
+
+- GitHub comment reporter
+- Console reporter
+- JSON reporter (for post-processing)
+
+## How It Works
+
+<a name="how-it-works"></a>
+
+1. Load PR context from GitHub API or event payload
+2. Fetch changed files and patches (lazy diff optional)
+3. Run rules in parallel where safe
+4. Report findings to configured outputs
+5. Exit with CI-friendly status
+
+## Development
 
 ```bash
 bundle exec rspec
