@@ -21,4 +21,6 @@ jobs:
           ruby-version: "3.2"
           bundler-cache: true
       - name: Run Nomos
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bundle exec nomos run
