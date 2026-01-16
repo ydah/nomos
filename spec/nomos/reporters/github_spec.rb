@@ -7,6 +7,7 @@ RSpec.describe Nomos::Reporters::GitHub do
 
   it "creates a comment when none exists" do
     allow(client).to receive(:list_issue_comments).and_return([])
+    allow(client).to receive(:pull_request_files).and_return([])
     expect(client).to receive(:create_comment) do |_, _, body|
       expect(body).to include(Nomos::Reporters::GitHub::MARKER)
       expect(body).to include("Nomos Report")
@@ -20,6 +21,7 @@ RSpec.describe Nomos::Reporters::GitHub do
     allow(client).to receive(:list_issue_comments).and_return([
       { "id" => 10, "body" => "#{Nomos::Reporters::GitHub::MARKER}\nold" }
     ])
+    allow(client).to receive(:pull_request_files).and_return([])
 
     expect(client).to receive(:update_comment) do |_, id, body|
       expect(id).to eq(10)

@@ -31,6 +31,12 @@ module Nomos
       patch_json("/repos/#{repo}/issues/comments/#{comment_id}", body: body)
     end
 
+    def create_review(repo, number, body:, event: "COMMENT", comments: [], commit_id: nil)
+      payload = { body: body, event: event, comments: comments }
+      payload[:commit_id] = commit_id if commit_id
+      post_json("/repos/#{repo}/pulls/#{number}/reviews", payload)
+    end
+
     private
 
     def get_paginated(path)

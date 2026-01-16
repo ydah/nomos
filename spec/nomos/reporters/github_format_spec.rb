@@ -7,6 +7,7 @@ RSpec.describe Nomos::Reporters::GitHub do
 
   it "formats findings with file and line" do
     allow(client).to receive(:list_issue_comments).and_return([])
+    allow(client).to receive(:pull_request_files).and_return([])
 
     expect(client).to receive(:create_comment) do |_, _, body|
       expect(body).to include("## Nomos Report")
@@ -22,6 +23,7 @@ RSpec.describe Nomos::Reporters::GitHub do
 
   it "renders empty report" do
     allow(client).to receive(:list_issue_comments).and_return([])
+    allow(client).to receive(:pull_request_files).and_return([])
 
     expect(client).to receive(:create_comment) do |_, _, body|
       expect(body).to include("No issues found.")

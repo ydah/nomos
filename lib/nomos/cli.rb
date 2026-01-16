@@ -137,7 +137,13 @@ module Nomos
           Reporters::Console.new
         when "github"
           client = GitHubClient.new(token: ENV["GITHUB_TOKEN"], api_url: ENV["GITHUB_API_URL"] || "https://api.github.com")
-          Reporters::GitHub.new(client: client, repo: context.repo, pr_number: context.pull_request.fetch("number"))
+          Reporters::GitHub.new(
+            client: client,
+            repo: context.repo,
+            pr_number: context.pull_request.fetch("number"),
+            pull_request: context.pull_request,
+            context: context
+          )
         when "json"
           Reporters::Json.new(path: json_report_path(config))
         else
