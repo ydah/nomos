@@ -13,7 +13,14 @@ module Nomos
 
           return [] if context.changed_lines <= max
 
-          [Finding.fail("PR is too large (#{context.changed_lines} lines changed, max #{max})", source: name)]
+          message = [
+            "PR size exceeds limit",
+            "- Reason: #{context.changed_lines} lines changed (max #{max}).",
+            "- Impact: Large PRs are harder to review and riskier to merge.",
+            "- Action: Split this PR or raise the limit."
+          ].join("\n")
+
+          [Finding.fail(message, source: name)]
         end
       end
     end

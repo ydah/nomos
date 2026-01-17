@@ -37,7 +37,7 @@ RSpec.describe Nomos::Reporters::GitHub do
       expect(comments.first[:path]).to eq("lib/example.rb")
       expect(comments.first[:line]).to eq(2)
       expect(comments.first[:side]).to eq("RIGHT")
-      expect(comments.first[:body]).to include("**Warning**")
+      expect(comments.first[:body]).to include("Check (spec)")
     end
 
     reporter.report([finding])

@@ -102,7 +102,7 @@ module Nomos
                    end
         source = finding.source.to_s.empty? ? "" : " (#{finding.source})"
         text = "#{finding.text}#{source}#{location}"
-        "> [!#{alert}]\n> **#{alert.capitalize}** #{text}"
+        "> [!#{alert}]\n> #{text}"
       end
 
       def severity_alert(severity)

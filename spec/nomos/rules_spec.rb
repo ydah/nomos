@@ -52,7 +52,7 @@ RSpec.describe Nomos::Rules do
     findings = rule.run(context)
 
     expect(findings.length).to eq(1)
-    expect(findings.first.text).to include("Required files not changed")
+    expect(findings.first.text).to include("Required file update missing")
   end
 
   it "forbids matching paths" do
@@ -65,7 +65,7 @@ RSpec.describe Nomos::Rules do
     findings = rule.run(context)
 
     expect(findings.length).to eq(1)
-    expect(findings.first.text).to include("Forbidden paths changed")
+    expect(findings.first.text).to include("Restricted paths changed")
   end
 
   it "requires labels to be present" do
@@ -96,6 +96,6 @@ RSpec.describe Nomos::Rules do
     findings = rule.run(context)
 
     expect(findings.length).to eq(1)
-    expect(findings.first.text).to include("TODO found in diffs")
+    expect(findings.first.text).to include("TODO markers in diff")
   end
 end

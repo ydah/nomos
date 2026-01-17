@@ -18,7 +18,13 @@ module Nomos
 
           return [] if matches.empty?
 
-          [Finding.fail("TODO found in diffs: #{matches.join(", ")}", source: name)]
+          message = [
+            "TODO markers in diff",
+            "- Files: #{matches.join(", ")}",
+            "- Action: Resolve or remove TODOs, or update the patterns."
+          ].join("\n")
+
+          [Finding.fail(message, source: name)]
         end
       end
     end

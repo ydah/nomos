@@ -17,7 +17,14 @@ module Nomos
 
           return [] if matches.empty?
 
-          [Finding.fail("Forbidden paths changed: #{matches.join(", ")}", source: name)]
+          message = [
+            "Restricted paths changed",
+            "- Files: #{matches.join(", ")}",
+            "- Impact: Changes in protected paths require extra review.",
+            "- Action: Revert these changes or update the rule."
+          ].join("\n")
+
+          [Finding.fail(message, source: name)]
         end
       end
     end

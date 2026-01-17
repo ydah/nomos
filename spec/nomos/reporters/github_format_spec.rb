@@ -11,7 +11,7 @@ RSpec.describe Nomos::Reporters::GitHub do
 
     expect(client).to receive(:create_comment) do |_, _, body|
       expect(body).to include("## Nomos Report")
-      expect(body).to include("**Warning**")
+      expect(body).to include("Check (spec)")
       expect(body).to include("`lib/example.rb:12`")
     end
 

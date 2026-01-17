@@ -17,7 +17,13 @@ module Nomos
 
           return [] if matched
 
-          [Finding.fail("Required files not changed: #{patterns.join(", ")}", source: name)]
+          message = [
+            "Required file update missing",
+            "- Reason: None of these patterns were changed: #{patterns.join(", ")}.",
+            "- Action: Update at least one matching file or adjust the rule."
+          ].join("\n")
+
+          [Finding.fail(message, source: name)]
         end
       end
     end

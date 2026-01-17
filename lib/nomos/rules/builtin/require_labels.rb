@@ -16,7 +16,13 @@ module Nomos
 
           return [] if missing.empty?
 
-          [Finding.fail("Missing required labels: #{missing.join(", ")}", source: name)]
+          message = [
+            "Missing required labels",
+            "- Missing: #{missing.join(", ")}",
+            "- Action: Add the label(s) to the PR."
+          ].join("\n")
+
+          [Finding.fail(message, source: name)]
         end
       end
     end
