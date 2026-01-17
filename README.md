@@ -161,6 +161,32 @@ Available DSL helpers:
 - `pr_title`, `pr_body`, `pr_number`, `pr_author`, `pr_labels`
 - `repo`, `base_branch`, `ci`
 
+### Adding custom rules
+
+1. Create `.nomos/rules.rb` and define one or more `rule "name"` blocks.
+2. Register the file in `nomos.yml` under `rules` with `type: ruby.file` and `params.path: .nomos/rules.rb`.
+3. Run `nomos run` (or your CI job) to verify the rule executes.
+
+Example:
+
+```rb
+# .nomos/rules.rb
+rule "require_docs_change" do
+  unless changed_files.any? { |file| file.start_with?("docs/") }
+    fail "Docs must be updated for this change", file: "docs/"
+  end
+end
+```
+
+```yml
+# nomos.yml
+rules:
+  - name: require_docs_change
+    type: ruby.file
+    params:
+      path: .nomos/rules.rb
+```
+
 ## Reporters
 
 <a name="reporters"></a>
@@ -187,4 +213,4 @@ bundle exec rspec
 
 ## License
 
-MIT
+MIT License. See `LICENSE` file for details.
