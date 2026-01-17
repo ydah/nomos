@@ -155,11 +155,141 @@ rule "no_debugger" do
 end
 ```
 
-Available DSL helpers:
+Available DSL API:
 
-- `changed_files`, `diff(file)`
-- `pr_title`, `pr_body`, `pr_number`, `pr_author`, `pr_labels`
-- `repo`, `base_branch`, `ci`
+#### changed_files
+
+Array of changed file paths.
+
+```rb
+rule "example_changed_files" do
+  changed_files.grep(/\.md$/).each do |file|
+    message "Docs updated", file: file
+  end
+end
+```
+
+#### diff(file)
+
+Unified diff for a file (string; empty if unavailable).
+
+```rb
+rule "example_diff" do
+  if diff("lib/app.rb").include?("binding.pry")
+    fail "Debug hook found", file: "lib/app.rb"
+  end
+end
+```
+
+#### pr_title
+
+PR title string.
+
+```rb
+rule "example_pr_title" do
+  warn "Title should start with [chore]", file: "PR" unless pr_title.start_with?("[chore]")
+end
+```
+
+#### pr_body
+
+PR body string.
+
+```rb
+rule "example_pr_body" do
+  fail "PR body must include a checklist", file: "PR" unless pr_body.to_s.include?("- [ ]")
+end
+```
+
+#### pr_number
+
+PR number.
+
+```rb
+rule "example_pr_number" do
+  message "Reviewing PR ##{pr_number}"
+end
+```
+
+#### pr_author
+
+PR author login.
+
+```rb
+rule "example_pr_author" do
+  warn "First-time contributor", file: "PR" if pr_author == "new-contributor"
+end
+```
+
+#### pr_labels
+
+Array of label names.
+
+```rb
+rule "example_pr_labels" do
+  fail "Missing security label", file: "PR" unless pr_labels.include?("security")
+end
+```
+
+#### repo
+
+Repository identifier (`owner/repo`).
+
+```rb
+rule "example_repo" do
+  message "Running in #{repo}"
+end
+```
+
+#### base_branch
+
+Base branch name.
+
+```rb
+rule "example_base_branch" do
+  warn "Target branch should be main", file: "PR" unless base_branch == "main"
+end
+```
+
+#### ci
+
+CI context hash.
+
+```rb
+rule "example_ci" do
+  fail "Missing CI provider info", file: "CI" unless ci["provider"]
+end
+```
+
+#### message(text, **opts)
+
+Add informational finding.
+
+```rb
+rule "example_message" do
+  message "Heads up", file: "README.md", line: 1, code: "docs"
+end
+```
+
+#### warn(text, **opts)
+
+Add warning finding.
+
+```rb
+rule "example_warn" do
+  warn "Large change set", file: "PR", code: "size"
+end
+```
+
+#### fail(text, **opts)
+
+Add failure finding.
+
+```rb
+rule "example_fail" do
+  fail "Missing CHANGELOG entry", file: "CHANGELOG.md", code: "changelog"
+end
+```
 
 ### Adding custom rules
 
