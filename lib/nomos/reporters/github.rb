@@ -43,15 +43,8 @@ module Nomos
         if findings.empty?
           lines << "No issues found."
         else
-          findings.each do |finding|
-            label = finding.severity.to_s.upcase
-            location = if finding.file
-                         " (`#{finding.file}#{finding.line ? ":#{finding.line}" : ""}`)"
-                       else
-                         ""
-                       end
-            lines << "- **#{label}** #{finding.text}#{location}"
-          end
+          blocks = findings.map { |finding| format_finding_block(finding) }
+          lines << blocks.join("\n\n")
         end
 
         lines.join("\n")
@@ -93,9 +86,34 @@ module Nomos
       end
 
       def build_inline_body(finding)
-        label = finding.severity.to_s.upcase
+        "#{INLINE_MARKER}\n#{format_alert_block(finding, include_location: false)}"
+      end
+
+      def format_finding_block(finding)
+        format_alert_block(finding, include_location: true)
+      end
+
+      def format_alert_block(finding, include_location:)
+        alert = severity_alert(finding.severity)
+        location = if include_location && finding.file
+                     " (`#{finding.file}#{finding.line ? ":#{finding.line}" : ""}`)"
+                   else
+                     ""
+                   end
         source = finding.source.to_s.empty? ? "" : " (#{finding.source})"
-        "#{INLINE_MARKER}\n**#{label}** #{finding.text}#{source}"
+        text = "#{finding.text}#{source}#{location}"
+        "> [!#{alert}]\n> **#{alert.capitalize}** #{text}"
+      end
+
+      def severity_alert(severity)
+        case severity
+        when :fail
+          "CAUTION"
+        when :warn
+          "WARNING"
+        else
+          "NOTE"
+        end
       end
 
       def diff_lines_for(file)

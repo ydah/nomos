@@ -3,6 +3,11 @@
 module Nomos
   class Finding
     SEVERITIES = %i[message warn fail].freeze
+    LEVEL_MAP = {
+      "note" => :message,
+      "warning" => :warn,
+      "caution" => :fail
+    }.freeze
 
     attr_reader :severity, :text, :file, :line, :code, :source
 
@@ -30,6 +35,20 @@ module Nomos
       @code = code
       @source = source
       freeze
+    end
+
+    def self.severity_for_level(level)
+      key = level.to_s.strip.downcase
+      severity = LEVEL_MAP[key]
+      raise ArgumentError, "Unknown level: #{level}" unless severity
+
+      severity
+    end
+
+    def with_severity(new_severity)
+      return self if new_severity == severity
+
+      self.class.new(new_severity, text, file: file, line: line, code: code, source: source)
     end
 
     def to_h

@@ -58,6 +58,7 @@ module Nomos
       end
       context = timing.measure("context") { ContextLoader.load(performance: performance) }
       findings = timing.measure("rules") { Runner.new(config, context).run }
+      findings = upgrade_warnings(findings) if options[:strict]
 
       reporters = timing.measure("reporters") { build_reporters(config, context, options[:reporter]) }
       timing.measure("report_outputs") { reporters.each { |reporter| reporter.report(findings) } }
@@ -154,9 +155,14 @@ module Nomos
 
     def exit_code(findings, strict)
       return 1 if findings.any? { |finding| finding.severity == :fail }
-      return 1 if strict && findings.any? { |finding| finding.severity == :warn }
 
       0
+    end
+
+    def upgrade_warnings(findings)
+      findings.map do |finding|
+        finding.severity == :warn ? finding.with_severity(:fail) : finding
+      end
     end
 
     def default_config
